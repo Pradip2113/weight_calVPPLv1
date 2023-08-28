@@ -27,6 +27,9 @@ frappe.ui.form.on('Weight Bridge', {
 	  emtyWeightField.refresh();
 	}
   });
+
+
+
   
 frappe.ui.form.on('Weight Bridge', {
 	onload: function (frm) {

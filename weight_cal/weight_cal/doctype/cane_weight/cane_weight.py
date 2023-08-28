@@ -121,7 +121,15 @@ class CaneWeight(Document):
 	@frappe.whitelist()
 	def get_actual_weight(self):
 		self.actual_weight=self.loaded_weight-self.empty_weight
-
+  
+	@frappe.whitelist()
+	def before_save(self):
+		self.validate_net_weight()
+  
+	@frappe.whitelist()
+	def validate_net_weight(self):
+		if self.actual_weight < 0:
+			frappe.throw('Weight can not be negative')
 	# @frappe.whitelist()
 	# def append_qty(self):
 	#   for i in self.items:

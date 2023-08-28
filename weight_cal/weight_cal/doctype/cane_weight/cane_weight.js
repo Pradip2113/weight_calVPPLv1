@@ -8,6 +8,18 @@ frappe.ui.form.on('Cane Weight', {
 });
 
 frappe.ui.form.on('Cane Weight', {
+    get_loaded_weight: function(frm) {
+            frappe.model.set_value("Cane Weight", frm.doc.name, 'gross_weight_timedate', frappe.datetime.get_datetime_as_string());
+    }
+});
+frappe.ui.form.on('Cane Weight', {
+    get_empty_weight: function(frm) {
+            frappe.model.set_value("Cane Weight", frm.doc.name, 'tear_weight_timedate', frappe.datetime.get_datetime_as_string());
+    }
+});
+
+
+frappe.ui.form.on('Cane Weight', {
 	onload: function (frm) {
 		frm.call({
 			method:'get_bridge_info',

@@ -20,10 +20,12 @@
   "wb",
   "column_break_my8tj",
   "loaded_weight",
+  "gross_weight_timedate",
   "column_break_rof0z",
   "get_loaded_weight",
   "column_break_me50q",
   "empty_weight",
+  "tear_weight_timedate",
   "column_break_fapxz",
   "get_empty_weight",
   "column_break_gbpd2",
@@ -89,7 +91,8 @@
   "column_break_znamt",
   "weight_partner_status",
   "uin",
-  "amended_from"
+  "amended_from",
+  "transporter_code"
  ],
  "fields": [
   {
@@ -567,12 +570,29 @@
    "options": "Cane Weight",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "gross_weight_timedate",
+   "fieldtype": "Datetime",
+   "label": "Gross Weight Time/Date"
+  },
+  {
+   "fieldname": "tear_weight_timedate",
+   "fieldtype": "Datetime",
+   "label": "Tear Weight Time/Date"
+  },
+  {
+   "fetch_from": "contract_id.transporter_code",
+   "fieldname": "transporter_code",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Transporter Code"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-07 14:03:46.518267",
+ "modified": "2023-08-16 14:21:31.410534",
  "modified_by": "Administrator",
  "module": "Weight Cal",
  "name": "Cane Weight",
