@@ -2,6 +2,13 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('Cane Weight', {
+    refresh: function(frm) {
+        $('.layout-side-section').hide();
+        $('.layout-main-section-wrapper').css('margin-left', '0');
+    }
+});
+
+frappe.ui.form.on('Cane Weight', {
 	// refresh: function(frm) {
 
 	// }
@@ -28,15 +35,33 @@ frappe.ui.form.on('Cane Weight', {
 	}
 })
 
-
 frappe.ui.form.on('Cane Weight', {
-	onload: function (frm) {
+	refresh: function (frm) {
 		frm.call({
-			method:'get_empty_weight',
+			method:'get_bridge_info',
 			doc: frm.doc,
 		});
 	}
 })
+
+
+
+frappe.ui.form.on('Cane Weight', {
+	branch: function (frm) {
+		frm.call({
+			method:'get_shift',
+			doc: frm.doc,
+		});
+	}
+})
+// frappe.ui.form.on('Cane Weight', {
+// 	onload: function (frm) {
+// 		frm.call({
+// 			method:'get_empty_weight',
+// 			doc: frm.doc,
+// 		});
+// 	}
+// })
 
 frappe.ui.form.on('Cane Weight', {
 	get_loaded_weight: function (frm) {

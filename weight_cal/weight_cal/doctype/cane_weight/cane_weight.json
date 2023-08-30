@@ -6,15 +6,18 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "cane_weight_no",
+  "trip_sheet_no",
   "column_break_n4bxl",
   "season",
   "column_break_dnf5s",
   "branch",
   "column_break_g7pew",
-  "shft",
+  "cane_weight_no",
   "column_break_rrmcc",
+  "shft",
+  "column_break_c2zme",
   "date",
+  "time",
   "section_break_nu6qb",
   "operator_name",
   "wb",
@@ -28,46 +31,45 @@
   "tear_weight_timedate",
   "column_break_fapxz",
   "get_empty_weight",
+  "water_supplier_weight",
   "column_break_gbpd2",
   "binding_weight",
   "actual_weight",
   "user_name",
   "section_break_eqeka",
-  "trip_sheet_no",
   "plot_no",
-  "farmer_code",
-  "farmer_name",
-  "area_acre",
-  "column_break_9npn6",
   "farmer_village",
+  "area_acre",
+  "burn_cane",
+  "route_code",
+  "column_break_9npn6",
+  "farmer_name",
+  "farmer_code",
   "cane_variety",
   "plantation_date",
   "survery_no",
-  "route_code",
   "column_break_tbp8h",
+  "transporter_name",
+  "contract_id",
   "route_name",
   "distance",
-  "burn_cane",
   "percentage",
-  "contract_id",
   "column_break_udht1",
-  "transporter_name",
-  "vehicle_type",
-  "harvester_code",
   "harvester_name",
+  "harvester_code",
+  "vehicle_type",
   "gang_type",
+  "is_kisan_card",
   "column_break_ivlns",
   "cartno",
   "vehicle_number",
   "tolly_1",
   "tolly_2",
   "rope",
-  "is_kisan_card",
   "column_break_nl44b",
   "cane_inward_no",
   "season_day",
   "slip_date",
-  "time",
   "village",
   "state",
   "section_break_uoiyk",
@@ -87,7 +89,7 @@
   "column_break_c2nel",
   "water_supplier_name",
   "column_break_drpjg",
-  "weight_partners_weight",
+  "water_share",
   "column_break_znamt",
   "weight_partner_status",
   "uin",
@@ -97,6 +99,7 @@
  "fields": [
   {
    "allow_on_submit": 1,
+   "default": "2022-2023",
    "fieldname": "season",
    "fieldtype": "Link",
    "label": "Season",
@@ -124,9 +127,9 @@
   },
   {
    "fieldname": "shft",
-   "fieldtype": "Select",
-   "label": "Shft",
-   "options": "1st\n2nd\n3rd"
+   "fieldtype": "Data",
+   "label": "Shift",
+   "read_only": 1
   },
   {
    "default": "Today",
@@ -142,6 +145,7 @@
    "default": "Now",
    "fieldname": "time",
    "fieldtype": "Time",
+   "hidden": 1,
    "label": "Time"
   },
   {
@@ -153,7 +157,7 @@
    "fieldtype": "Section Break"
   },
   {
-   "fetch_from": "trip_sheet_no.plot_no",
+   "fetch_from": "trip_sheet_no.plat_no_id",
    "fieldname": "plot_no",
    "fieldtype": "Link",
    "label": "Plot No",
@@ -198,6 +202,7 @@
    "options": "Farmer List"
   },
   {
+   "allow_on_submit": 1,
    "fetch_from": "trip_sheet_no.vehicle_type",
    "fieldname": "vehicle_type",
    "fieldtype": "Link",
@@ -229,6 +234,7 @@
   },
   {
    "allow_on_submit": 1,
+   "fetch_from": "trip_sheet_no.vehicle_number",
    "fieldname": "vehicle_number",
    "fieldtype": "Data",
    "label": "Vehicle Number"
@@ -245,7 +251,7 @@
    "fieldname": "harvester_code",
    "fieldtype": "Link",
    "label": "Harvester Code",
-   "options": "Supplier"
+   "options": "Farmer List"
   },
   {
    "fetch_from": "trip_sheet_no.harvester_name",
@@ -329,7 +335,8 @@
   },
   {
    "fieldname": "column_break_rof0z",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": " "
   },
   {
    "fieldname": "get_loaded_weight",
@@ -347,7 +354,8 @@
   },
   {
    "fieldname": "column_break_fapxz",
-   "fieldtype": "Column Break"
+   "fieldtype": "Column Break",
+   "label": " "
   },
   {
    "fieldname": "get_empty_weight",
@@ -390,7 +398,7 @@
   },
   {
    "allow_on_submit": 1,
-   "fetch_from": "farmer_code.branch",
+   "default": "Bedkihal",
    "fieldname": "branch",
    "fieldtype": "Link",
    "label": "Branch",
@@ -398,8 +406,11 @@
   },
   {
    "fieldname": "cane_weight_no",
-   "fieldtype": "Data",
-   "label": "Cane Weight No"
+   "fieldtype": "Float",
+   "label": "Cane Weight No",
+   "precision": "0",
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_n4bxl",
@@ -477,10 +488,11 @@
    "options": "All\ntrailor 1 st\ntrailor  2 nd\n1 st & 2 nd trailor  upper rope\n1 st and 2 nd Bottom rope\n1st trailor all & 2nd  trailor  Upper Rope\n1st trailor all & 2nd  trailor  Bottom Rope\n1st trailor  upper rope\n1st trailor  Bottom rope\n2nd trailor all & 1st  trailor  Upper Rope\n2nd trailor  Bottom rope\nTL Middle Rope\nTL Middle Rope 1\nTL Bottom Rope\nTL Bottom & Middle Rope\nTL Top& Middle Rope\n2nd trailor all & 1st trailor  upper rope\n2nd trailor upper rope\nTL Middle Rope 2"
   },
   {
+   "fetch_from": "plot_no.is_kisan_card",
    "fieldname": "is_kisan_card",
    "fieldtype": "Select",
    "label": "is Kisan Card",
-   "options": "Yes\nNo"
+   "options": "No\nYes"
   },
   {
    "fieldname": "cane_inward_no",
@@ -541,12 +553,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fetch_from": "trip_sheet_no.water_share",
-   "fieldname": "weight_partners_weight",
-   "fieldtype": "Float",
-   "label": "Water Share "
-  },
-  {
    "fieldname": "column_break_znamt",
    "fieldtype": "Column Break"
   },
@@ -587,12 +593,30 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Transporter Code"
+  },
+  {
+   "fieldname": "column_break_c2zme",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "water_supplier_weight",
+   "fieldtype": "Data",
+   "label": "Water Supplier Weight",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip_sheet_no.water_share",
+   "fieldname": "water_share",
+   "fieldtype": "Float",
+   "label": "Water Share (%)",
+   "precision": "2",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-08-16 14:21:31.410534",
+ "modified": "2023-08-30 17:05:14.233950",
  "modified_by": "Administrator",
  "module": "Weight Cal",
  "name": "Cane Weight",
