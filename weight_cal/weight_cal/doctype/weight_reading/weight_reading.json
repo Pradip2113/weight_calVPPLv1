@@ -23,7 +23,13 @@
   "wb2_status",
   "wb3_status",
   "wb4_status",
-  "wb5_status"
+  "wb5_status",
+  "column_break_gtzh2",
+  "wm1_ip",
+  "wm2_ip",
+  "wm3_ip",
+  "wm4_ip",
+  "wm5_ip"
  ],
  "fields": [
   {
@@ -108,12 +114,41 @@
   {
    "fieldname": "column_break_gzq83",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_gtzh2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "wm1_ip",
+   "fieldtype": "Data",
+   "label": "Weight Bridge IP 1"
+  },
+  {
+   "fieldname": "wm2_ip",
+   "fieldtype": "Data",
+   "label": "Weight Bridge IP 2"
+  },
+  {
+   "fieldname": "wm3_ip",
+   "fieldtype": "Data",
+   "label": "Weight Bridge IP 3"
+  },
+  {
+   "fieldname": "wm4_ip",
+   "fieldtype": "Data",
+   "label": "Weight Bridge IP 4"
+  },
+  {
+   "fieldname": "wm5_ip",
+   "fieldtype": "Data",
+   "label": "Weight Bridge IP 5"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-08-02 16:14:04.941235",
+ "modified": "2023-09-06 12:45:57.883821",
  "modified_by": "Administrator",
  "module": "Weight Cal",
  "name": "Weight Reading",

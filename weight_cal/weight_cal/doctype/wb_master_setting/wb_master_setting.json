@@ -17,9 +17,9 @@
  "fields": [
   {
    "fieldname": "operator_name",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "label": "Operator ID",
-   "read_only": 1
+   "options": "User"
   },
   {
    "fieldname": "weight_bridge_no",
@@ -37,6 +37,7 @@
    "read_only": 1
   },
   {
+   "fetch_from": "operator_name.full_name",
    "fieldname": "user_name",
    "fieldtype": "Data",
    "label": "Operator Name",
@@ -62,7 +63,7 @@
    "link_fieldname": "operator_name"
   }
  ],
- "modified": "2023-04-08 18:28:44.871714",
+ "modified": "2023-09-23 15:50:33.625472",
  "modified_by": "Administrator",
  "module": "Weight Cal",
  "name": "WB Master Setting",

@@ -1,15 +1,43 @@
 # Copyright (c) 2023, Abhishek Chougule and contributors
 # For license information, please see license.txt
-
+import platform
+import uuid
 import frappe
 from frappe.model.document import Document
+import socket
+
+local_ip = socket.gethostbyname(socket.gethostname())
 
 
 class WeightBridge(Document):
+    global weight
+    global weight_name
     
 #-----------------------------------------------------------------------------------------------------------------
     @frappe.whitelist()
     def get_bridge_info(self):
+
+        # frappe.msgprint(f'Your IP Address is {local_ip}')
+        # weight_reading=frappe.get_doc("Weight Reading", "weight-reading")
+        # if(weight_reading.wm1_ip==local_ip):
+        #     frappe.set_value('Weight Bridge 1')
+        #     frappe.msgprint(('Weight Bridge 1'+' : '+weight_reading.wb1_status),title="Weight Bridge Status")
+        # elif(weight_reading.wm2_ip==local_ip):
+        #     self.wb='Weight Bridge 2'
+        #     frappe.msgprint(('Weight Bridge 2'+' : '+weight_reading.wb2_status),title="Weight Bridge Status")
+        # elif(weight_reading.wm3_ip==local_ip):
+        #     self.wb='Weight Bridge 3'
+        #     frappe.msgprint(('Weight Bridge 3'+' : '+weight_reading.wb3_status),title="Weight Bridge Status")
+        # elif(weight_reading.wm4_ip==local_ip):
+        #     self.wb='Weight Bridge 4'
+        #     frappe.msgprint(('Weight Bridge 4'+' : '+weight_reading.wb4_status),title="Weight Bridge Status")
+        # elif(weight_reading.wm5_ip==local_ip):
+        #     self.wb='Weight Bridge 5'
+        #     frappe.msgprint(('Weight Bridge 5'+' : '+weight_reading.wb5_status),title="Weight Bridge Status")
+        # else:
+        #     frappe.msgprint(("Local IP Dosen't Match with any IP of weight bridge"),indicator="red",title="Weight Bridge Status")
+        
+            
         self.user_name=frappe.db.get_value("User", frappe.session.user, "full_name")
         doc = frappe.db.get_list("WB Master Setting", fields=["operator_name","weight_bridge_no"])
         for d in doc:
@@ -83,6 +111,23 @@ class WeightBridge(Document):
 
     @frappe.whitelist()
     def get_loaded_weight(self):
+        # weight_reading=frappe.get_doc("Weight Reading", "weight-reading")
+        # if (weight_reading.wm1_ip == local_ip and weight_reading.wb1_status == 'Connected'):
+        #     self.loaded_weight=weight_reading.wm1
+            
+        # elif(weight_reading.wm2_ip==local_ip and weight_reading.wb2_status == 'Connected'):
+        #     self.loaded_weight=weight_reading.wm2
+     
+        # elif(weight_reading.wm3_ip==local_ip and weight_reading.wb3_status == 'Connected'):
+        #     self.loaded_weight=weight_reading.wm3
+           
+        # elif(weight_reading.wm4_ip==local_ip and weight_reading.wb4_status == 'Connected'):
+        #     self.loaded_weight=weight_reading.wm4
+       
+        # elif(weight_reading.wm5_ip==local_ip and weight_reading.wb5_status == 'Connected'):
+        #     self.loaded_weight=weight_reading.wm5
+        
+      
         doc=frappe.get_doc("Weight Reading")
         if self.wb=="Weight Bridge 1":
             self.loaded_weight=doc.wm1
@@ -97,8 +142,24 @@ class WeightBridge(Document):
 
     @frappe.whitelist()
     def get_empty_weight(self):
-        # if is_internet_available:
-        #     frappe.msgprint('Internet Available')
+        # weight_reading=frappe.get_doc("Weight Reading", "weight-reading")
+        # if (weight_reading.wm1_ip == local_ip and weight_reading.wb1_status == 'Connected'):
+        #     self.empty_weight=weight_reading.wm1
+            
+        # elif(weight_reading.wm2_ip==local_ip and weight_reading.wb2_status == 'Connected'):
+        #     self.empty_weight=weight_reading.wm2
+     
+        # elif(weight_reading.wm3_ip==local_ip and weight_reading.wb3_status == 'Connected'):
+        #     self.empty_weight=weight_reading.wm3
+           
+        # elif(weight_reading.wm4_ip==local_ip and weight_reading.wb4_status == 'Connected'):
+        #     self.empty_weight=weight_reading.wm4
+       
+        # elif(weight_reading.wm5_ip==local_ip and weight_reading.wb5_status == 'Connected'):
+        #     self.empty_weight=weight_reading.wm5
+        
+        self.empty_weight=weight
+        self.wb=weight_name
         doc=frappe.get_doc("Weight Reading")
         if self.wb=="Weight Bridge 1":
             self.empty_weight=doc.wm1
@@ -142,3 +203,5 @@ class WeightBridge(Document):
             frappe.throw(" Gross Weight  0  Is Not Allow ......")
         if self.empty_weight == 0:
             frappe.throw(" Tear Weight 0  Is Not Allow ......")
+            
+            

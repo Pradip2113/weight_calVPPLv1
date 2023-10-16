@@ -9,21 +9,33 @@ frappe.ui.form.on('Cane Weight', {
 });
 
 frappe.ui.form.on('Cane Weight', {
-	// refresh: function(frm) {
-
-	// }
+	actual_weight: function (frm) {
+		frm.call({
+			method:'net_weight',
+			doc: frm.doc,
+		});
+	}
 });
 
 frappe.ui.form.on('Cane Weight', {
-    get_loaded_weight: function(frm) {
-            frappe.model.set_value("Cane Weight", frm.doc.name, 'gross_weight_timedate', frappe.datetime.get_datetime_as_string());
-    }
+	empty_weight: function (frm) {
+		frm.call({
+			method:'tear_weight',
+			doc: frm.doc,
+		});
+	}
 });
-frappe.ui.form.on('Cane Weight', {
-    get_empty_weight: function(frm) {
-            frappe.model.set_value("Cane Weight", frm.doc.name, 'tear_weight_timedate', frappe.datetime.get_datetime_as_string());
-    }
-});
+
+// frappe.ui.form.on('Cane Weight', {
+//     get_loaded_weight: function(frm) {
+//             frappe.model.set_value("Cane Weight", frm.doc.name, 'gross_weight_timedate', frappe.datetime.get_datetime_as_string());
+//     }
+// });
+// frappe.ui.form.on('Cane Weight', {
+//     get_empty_weight: function(frm) {
+//             frappe.model.set_value("Cane Weight", frm.doc.name, 'tear_weight_timedate', frappe.datetime.get_datetime_as_string());
+//     }
+// });
 
 
 frappe.ui.form.on('Cane Weight', {
@@ -43,6 +55,35 @@ frappe.ui.form.on('Cane Weight', {
 		});
 	}
 })
+
+frappe.ui.form.on('Cane Weight', {
+	manually_weight: function (frm) {
+	  var manuallyWeight = frm.doc.manually_weight;
+	  var loadedWeightField = frm.get_field('loaded_weight');
+	  if (manuallyWeight) {
+		loadedWeightField.df.read_only = 0;
+	  } else {
+		loadedWeightField.df.read_only = 1;
+		frm.set_value("loaded_weight", 0.0);
+	  }
+	  loadedWeightField.refresh();
+	}
+  });
+  
+  frappe.ui.form.on('Cane Weight', {
+	manually_tear_weight: function (frm) {
+	  var emtyWeight = frm.doc.manually_tear_weight;
+	  var emtyWeightField = frm.get_field('empty_weight');
+	  if (emtyWeight) {
+		emtyWeightField.df.read_only = 0;
+	  } else {
+		emtyWeightField.df.read_only = 1;
+		frm.set_value("empty_weight", 0.0);
+	  }
+	  emtyWeightField.refresh();
+	}
+  });
+
 
 
 
@@ -171,6 +212,25 @@ frappe.ui.form.on('Cane Weight', {
 	empty_weight: function (frm) {
 		frm.call({
 			method:'get_actual_weight',
+			doc: frm.doc,
+		});
+	}
+})
+frappe.ui.form.on('Cane Weight', {
+	empty_weight: function (frm) {
+		frm.call({
+			method:'get_actual_weight',
+			doc: frm.doc,
+		});
+	}
+})
+
+frappe.ui.form.on('Cane Weight', {
+	trip_sheet_no: function (frm) {
+		frm.clear_table("penalty_charges")
+		frm.refresh_field('penalty_charges')
+		frm.call({
+			method:'append_ht_tab',
 			doc: frm.doc,
 		});
 	}
