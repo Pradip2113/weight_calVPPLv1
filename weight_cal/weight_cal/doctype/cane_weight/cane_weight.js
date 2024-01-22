@@ -5,8 +5,10 @@ frappe.ui.form.on('Cane Weight', {
     refresh: function(frm) {
         $('.layout-side-section').hide();
         $('.layout-main-section-wrapper').css('margin-left', '0');
+		
     }
 });
+
 
 frappe.ui.form.on('Cane Weight', {
 	actual_weight: function (frm) {
@@ -40,10 +42,17 @@ frappe.ui.form.on('Cane Weight', {
 
 frappe.ui.form.on('Cane Weight', {
 	onload: function (frm) {
+		frm.fields_dict['trip_sheet_no'].$input.css('background-color', '#D2E9FB');
+		frm.fields_dict['slip_no'].$input.css('background-color', '#D2E9FB');
+		frm.fields_dict['vehicle_number'].$input.css('background-color', '#D2E9FB');
+		frm.fields_dict['season'].$input.css('background-color', '#D2E9FB');
+        frm.fields_dict['get_loaded_weight'].$input.css('background-color', '#D2E9FB');
+		frm.fields_dict['get_empty_weight'].$input.css('background-color', '#D2E9FB');
 		frm.call({
 			method:'get_bridge_info',
 			doc: frm.doc,
 		});
+		
 	}
 })
 

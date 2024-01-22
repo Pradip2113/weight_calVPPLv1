@@ -5,11 +5,7 @@ import frappe
 from frappe.model.document import Document
 import datetime
 from datetime import date
-import socket
 from frappe.utils.data import get_datetime
-
-
-local_ip = socket.gethostbyname(socket.gethostname())
 
 
 class CaneWeight(Document):
@@ -178,12 +174,15 @@ class CaneWeight(Document):
    
 	@frappe.whitelist()
 	def tear_weight(self):
-		if int(self.loaded_weight) < int(self.empty_weight):
+		tolerance = 1e-9 
+		loaded_weight=float(self.loaded_weight)
+		empty_weight=float(self.empty_weight)# Adjust the tolerance based on your specific requirements
+		if loaded_weight < empty_weight - tolerance:
 			frappe.throw("Error: Gross weight cannot be less than Tear weight.")
-		elif int(self.loaded_weight) == int(self.empty_weight):
+		elif abs(loaded_weight - empty_weight) < tolerance:
 			frappe.throw("Error: Gross weight and Tear weight cannot be the same.")
 
-   
+
 	@frappe.whitelist()
 	def get_actual_weight(self):
 		self.actual_weight=self.loaded_weight-self.empty_weight
@@ -203,12 +202,15 @@ class CaneWeight(Document):
 		self.update_counter_at_branch()
 		self.create_deduction()
 		self.set_value_in_h_and_t_contract()
+		self.assignDiseal()
 		self.weight_flag=2
+		self.add_diesel_sale()
   
 	@frappe.whitelist()
 	def before_cancel(self):
 		self.on_cancel_update_counter_at_branch()
 		self.cancel_deduction()
+		self.update_diesel_sale()
   
 	@frappe.whitelist()
 	def validate_net_weight(self):
@@ -339,4 +341,115 @@ class CaneWeight(Document):
 				frappe.throw(f'Your are not allow to create "Cane weight" because {self.contract_id} have not complited {branch_setting_time}  time set by agricultural Department come after {branch_setting_time-(datetime_value-value)} time')
 
 
-	#-----------------------------------------------------------------------------------------------------------------
+	def assignDiseal(self):
+		if self.gang_type == "HARVESTING MACHINE":
+			weightlist= frappe.get_all("Cane Weight",filters={"season":self.season,
+			"gang_type": "HARVESTING MACHINE","transporter_name":self.transporter_name,"harvester_name":self.harvester_name,"docstatus":1}, fields=["actual_weight"])
+			total_weight=0
+			for i in weightlist:
+				total_weight= total_weight + i.actual_weight
+			total_weight= total_weight + self.actual_weight
+			frappe.msgprint(str(total_weight))
+	
+	
+		
+  	
+	def add_diesel_sale(self):
+		ton_value_on_diesel_allocate, diesel_allocation_value_har, diesel_allocation_per_km = frappe.get_value("Branch",{"name":self.branch},["total_ton_value_from_which_diesel_will_allocate", "diesel_allocation_amount_per_ton", "diesel_allocation_amount_per_km"])
+		if(not ton_value_on_diesel_allocate):
+			frappe.throw("Please Enter Total TON Value From Which Diesel Will Allocate in Branch")
+		if(not diesel_allocation_value_har):
+			frappe.throw("Please Enter How Much Diesel Will Allocate (in Liter) in Branch")
+		if(not diesel_allocation_per_km):
+			frappe.throw("Please Enter Diesel Allocation Per KM (in Liter) in Branch")
+		if(self.vehicle_type!="BULLOCK CART"):
+			if(self.contract_id):
+				doc=frappe.get_doc("H and T Contract",self.contract_id)
+				child_table=doc.get("diesel_calculation")
+				count=0
+				for i in child_table:
+					if(len(child_table)>0 and i.customer_type=='Transporter'):
+						count=1
+						i.total_distance=i.total_distance+self.distance
+						i.total_allocation=i.total_allocation+(self.distance*diesel_allocation_per_km)
+						i.total_lapse=i.total_lapse+i.remaining
+						i.remaining=self.distance*diesel_allocation_per_km
+				if(count==0):
+					doc.append("diesel_calculation",{
+						"customer_type":"Transporter",
+						"total_distance":self.distance,
+						"total_allocation":self.distance*diesel_allocation_per_km,
+						"total_sold":0,
+						"total_lapse":0,
+						"remaining":self.distance*diesel_allocation_per_km,
+					})
+				doc.save()
+    
+		if(self.gang_type=="HARVESTING MACHINE"):
+			if(self.harvester_contract):
+				doc1=frappe.get_doc("H and T Contract",self.harvester_contract)
+				child_table=doc1.get("diesel_calculation")
+				count=0
+				for i in child_table:
+					if(len(child_table)>0 and i.customer_type=='Harvester'):
+						count=1
+						liter_value_per_ton=diesel_allocation_value_har/ton_value_on_diesel_allocate
+						i.total_weight=i.total_weight+self.actual_weight
+						i.total_allocation=i.total_allocation+(self.actual_weight*liter_value_per_ton)
+						i.remaining=i.remaining+(self.actual_weight*liter_value_per_ton)
+				if(count==0):
+					liter_value_per_ton=diesel_allocation_value_har/ton_value_on_diesel_allocate
+					doc1.append("diesel_calculation",{
+						"customer_type":"Harvester",
+						"total_weight":self.actual_weight,
+						"remaining":self.actual_weight*liter_value_per_ton,
+						"total_allocation":self.actual_weight*liter_value_per_ton,
+						"total_lapse":0,
+						"total_sold":0,
+					})
+				doc1.save()
+				
+    
+	def update_diesel_sale(self):
+		ton_value_on_diesel_allocate, diesel_allocation_value_har, diesel_allocation_per_km = frappe.get_value("Branch",{"name":self.branch},["total_ton_value_from_which_diesel_will_allocate", "diesel_allocation_amount_per_ton", "diesel_allocation_amount_per_km"])
+		if(not ton_value_on_diesel_allocate):
+			frappe.throw("Please Enter Total TON Value From Which Diesel Will Allocate in Branch")
+		if(not diesel_allocation_value_har):
+			frappe.throw("Please Enter How Much Diesel Will Allocate (in Liter) in Branch")
+		if(not diesel_allocation_per_km):
+			frappe.throw("Please Enter Diesel Allocation Per KM (in Liter) in Branch")
+		if(self.vehicle_type!="BULLOCK CART"):
+			if(self.contract_id):
+				doc=frappe.get_doc("H and T Contract",self.contract_id)
+				child_table=doc.get("diesel_calculation")
+				for i in child_table:
+					if(len(child_table)>0 and i.customer_type=='Transporter'):
+						i.remaining=(i.total_allocation-((self.distance*diesel_allocation_per_km)+i.total_sold))
+						i.total_lapse=i.total_lapse-(i.total_allocation-(i.total_sold+i.remaining))
+						i.total_distance=i.total_distance-self.distance
+						i.total_allocation=i.total_allocation-(self.distance*diesel_allocation_per_km)
+				doc.save()
+		if(self.gang_type=="HARVESTING MACHINE"):
+			if(self.harvester_contract):
+				doc1=frappe.get_doc("H and T Contract",self.harvester_contract)
+				child_table=doc1.get("diesel_calculation")
+				for i in child_table:
+					if(len(child_table)>0 and i.customer_type=='Harvester'):
+						liter_value_per_ton=diesel_allocation_value_har/ton_value_on_diesel_allocate
+						i.total_weight=i.total_weight-self.actual_weight
+						i.total_allocation=i.total_allocation-(self.actual_weight*liter_value_per_ton)
+						i.remaining=i.remaining-(self.actual_weight*liter_value_per_ton)
+				doc1.save()
+
+							
+   
+				
+   
+   
+   
+   
+   
+   
+   
+   
+  #-----------------------------------------------------------------------------------------------------------------
