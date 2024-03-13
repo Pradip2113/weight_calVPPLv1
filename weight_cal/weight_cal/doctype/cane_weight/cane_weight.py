@@ -38,7 +38,7 @@ class CaneWeight(Document):
 			self.operator_name= doc[0].name
 			self.wb= doc[0].weight_bridge_no
 		else:
-			frappe.throw("User do not have any permission to access any weight bridge")
+			frappe.msgprint("User do not have any permission to access any weight bridge")
 		wbstatus=frappe.get_doc("Weight Reading", "weight-reading")
 		temp=wbstatus.wb1_status
 		rolenm=frappe.db.get_value("User", frappe.session.user, "role_profile_name")
@@ -205,6 +205,7 @@ class CaneWeight(Document):
 		self.assignDiseal()
 		self.weight_flag=2
 		self.add_diesel_sale()
+		frappe.db.set_value("Farmer List",self.farmer_code,"read_only_count",1)
   
 	@frappe.whitelist()
 	def before_cancel(self):

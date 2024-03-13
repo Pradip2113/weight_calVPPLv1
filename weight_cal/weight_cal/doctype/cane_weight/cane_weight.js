@@ -1,6 +1,19 @@
 // Copyright (c) 2023, Abhishek Chougule and contributors
 // For license information, please see license.txt
 
+frappe.ui.form.on("Cane Weight", {
+    season: function(frm) {
+            frm.set_query("trip_sheet_no", function() { 
+                return {
+                    filters: [
+                        ["Trip Sheet", "season", '=', frm.doc.season],
+                    ]
+                };
+            });
+    	}
+	}
+);
+
 frappe.ui.form.on('Cane Weight', {
     refresh: function(frm) {
         $('.layout-side-section').hide();
@@ -8,7 +21,6 @@ frappe.ui.form.on('Cane Weight', {
 		
     }
 });
-
 
 frappe.ui.form.on('Cane Weight', {
 	actual_weight: function (frm) {
@@ -92,8 +104,6 @@ frappe.ui.form.on('Cane Weight', {
 	  emtyWeightField.refresh();
 	}
   });
-
-
 
 
 frappe.ui.form.on('Cane Weight', {
